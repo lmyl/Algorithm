@@ -347,6 +347,11 @@ func flipAdjacentElement<T>(for list: ListNode<T>?) -> ListNode<T>? {
     return first
 }
 
+/// 将链表以K个结点为一组进行翻转，不足K的组不进行翻转
+/// - Parameters:
+///   - list: 需要翻转的链表
+///   - groupCapcity: 组的大小
+/// - Returns: 翻转后的链表
 func flipAdjacentElement<T>(for list: ListNode<T>?, groupCapcity: Int) -> ListNode<T>? {
     if list == nil {
         return nil
@@ -387,4 +392,300 @@ func flipAdjacentElement<T>(for list: ListNode<T>?, groupCapcity: Int) -> ListNo
     }
     
     return first
+}
+
+/// 合并两个升序链表
+/// - Parameters:
+///   - first: 升序链表
+///   - second: 升序链表
+/// - Returns: 合并后的升序链表
+func combineAscendingOrderList<T: Comparable>(for first: ListNode<T>?, and second: ListNode<T>?) -> ListNode<T>? {
+    var left = first
+    var right = second
+    
+    var first: ListNode<T>?
+    var trail: ListNode<T>?
+    
+    func selectNode(for node: ListNode<T>) {
+        node.next = nil
+        if first == nil {
+            first = node
+            trail = node
+        } else {
+            trail?.next = node
+        }
+        trail = node
+    }
+    
+    while let leftNode = left, let rightNode = right {
+        if leftNode.value < rightNode.value {
+            left = leftNode.next
+            selectNode(for: leftNode)
+        } else {
+            right = rightNode.next
+            selectNode(for: rightNode)
+        }
+    }
+    
+    while let leftNode = left {
+        left = leftNode.next
+        selectNode(for: leftNode)
+    }
+    
+    while let rightNode = right {
+        right = rightNode.next
+        selectNode(for: rightNode)
+    }
+    
+    return first
+}
+
+/// 删除链表中的指定结点
+/// - Parameter node: 指定结点
+/// - Returns: 是否可以删除此结点
+func removeNodeFromList<T>(for node: ListNode<T>?) -> Bool {
+    guard let node = node, let next = node.next else {
+        return false
+    }
+    node.value = next.value
+    node.next = next.next
+    return true
+}
+
+/// 在链表指定结点前插入新的结点
+/// - Parameters:
+///   - new: 新的结点
+///   - before: 指定结点
+func insertNodeBeforeNodeInList<T>(for new: ListNode<T>, before: ListNode<T>) {
+    let temp = before.value
+    before.value = new.value
+    new.value = temp
+    new.next = before.next
+    before.next = new
+}
+
+/// 判断两个单链表是否相交，链表均不带环
+/// - Parameters:
+///   - first: 单链表
+///   - second: 单链表
+/// - Returns: `true`相交，`false`不相交
+func isCross<T>(for first: ListNode<T>?, and second: ListNode<T>?) -> Bool {
+    if first == nil || second == nil {
+        return false
+    }
+    
+    var left = first
+    var right = second
+    
+    while left?.next != nil {
+        left = left?.next
+    }
+    
+    while right?.next != nil {
+        right = right?.next
+    }
+    
+    if left === right {
+        return true
+    } else {
+        return false
+    }
+}
+
+/// 判断两个单环的单链表是否相交，两个链表至少一个带环
+/// - Parameters:
+///   - first: 单链表
+///   - second: 单链表
+/// - Returns: `true`相交，`false`不相交
+func isCrossWithRing<T>(for first: ListNode<T>?, and second: ListNode<T>?) -> Bool {
+    var quick = first
+    var slow = first
+    while quick != nil {
+        quick = quick?.next?.next
+        slow = slow?.next
+        if quick === slow {
+            break
+        }
+    }
+    
+    if quick == nil {
+        return false
+    }
+    
+    var quickSecond = second
+    var slowSecond = second
+    while quickSecond != nil {
+        quickSecond = quickSecond?.next?.next
+        slowSecond = slowSecond?.next
+        if quickSecond === slowSecond {
+            break
+        }
+    }
+    
+    if quickSecond == nil {
+        return false
+    }
+    
+    var standard = quick
+    
+    repeat  {
+        if standard === quickSecond {
+            return true
+        }
+        standard = standard?.next
+    } while standard !== quick
+    
+    return false
+    
+}
+
+/// 沿着链表next指针遍历是一个普通单链表，但是mutationsNext指针是随机指向其他结点的指针，翻转变异链表，要求所有指针反向
+/// - Parameter list: 变异链表
+/// - Returns: 翻转后的链表
+func reverseMutationsList<T>(for list: MutationsListNode<T>?) -> MutationsListNode<T>? {
+    if list == nil {
+        return nil
+    }
+    
+    var first = list
+    var next = first?.next
+    first?.next = nil
+    
+    while next != nil {
+        let nextToNext = next?.next
+        next?.next = first
+        first = next
+        next = nextToNext
+    }
+    
+    next = first
+    while next != nil {
+        let anotherNode = next?.mutationsNext
+        anotherNode?.mutationsNext = next
+        next = next?.next
+    }
+    
+    return first
+}
+
+/// 每个结点有两个指针，可以指向为空，也可以指向其他结点，其指向的结点的值大于此结点，将此异形链表展开成单链表
+/// - Parameter list: 异形链表
+/// - Returns: 新的单链表
+/// - note: 此方法每次读取数组中最小的结点，然后加入此结点的左右两个结点，数组的结构构成一个堆
+func flattenSortTreeMutationsList<T: Comparable>(for list: MutationsListNode<T>?) -> ListNode<T>? {
+    if list == nil {
+        return nil
+    }
+    var first: ListNode<T>?
+    var trail: ListNode<T>?
+    var nodeCaches = [list!]
+    
+    func adjustHeap(start: Int, end: Int) {
+        var parent = start
+        var son = 2 * start + 1
+        
+        while son <= end {
+            if son + 1 <= end {
+                if nodeCaches[son].value > nodeCaches[son + 1].value {
+                    son = son + 1
+                }
+            }
+            if nodeCaches[parent].value > nodeCaches[son].value {
+                let tempNode = nodeCaches[son]
+                nodeCaches[son] = nodeCaches[parent]
+                nodeCaches[parent] = tempNode
+                parent = son
+                son = 2 * parent + 1
+            } else {
+                break
+            }
+        }
+    }
+    
+    func fetchMinElement() -> MutationsListNode<T> {
+        let minElement = nodeCaches[0]
+        let count = nodeCaches.count
+        if count <= 1 {
+            nodeCaches = []
+        } else {
+            let last = nodeCaches[count - 1]
+            nodeCaches[0] = last
+            nodeCaches.removeLast()
+            adjustHeap(start: 0, end: count - 2)
+        }
+        
+        return minElement
+    }
+    
+    func append(element: MutationsListNode<T>) {
+        nodeCaches.append(element)
+        let end = nodeCaches.count - 1
+        var son = end
+        var parent = (son - 1) / 2
+        
+        while son >= 1 {
+            if nodeCaches[son].value < nodeCaches[parent].value {
+                let tempNode = nodeCaches[son]
+                nodeCaches[son] = nodeCaches[parent]
+                nodeCaches[parent] = tempNode
+                son = parent
+                parent = (son - 1) / 2
+            } else {
+                break
+            }
+        }
+    }
+    
+    while !nodeCaches.isEmpty {
+        let minNode = fetchMinElement()
+        let newNode = ListNode(value: minNode.value)
+        if first == nil {
+            first = newNode
+            trail = first
+        } else {
+            trail?.next = newNode
+            trail = newNode
+        }
+        if let leftNode = minNode.next {
+            append(element: leftNode)
+        }
+        if let rightNode = minNode.mutationsNext {
+            append(element: rightNode)
+        }
+    }
+    
+    return first
+}
+
+
+/// 有序链表中主链表指向下一个指针，还有一个指针指向此结点头的链表，可以理解结构为在晾晒架上挂长黄瓜，将此异形链表展开成单链表
+/// - Parameter list: 异形链表
+/// - Returns: 新的单链表
+/// - note: 此方法递归的合并链表结点的左右结点，最后展平到mutationsNext指针上
+func flattenSortMutationsList<T: Comparable>(for list: MutationsListNode<T>?) -> MutationsListNode<T>? {
+    func merge(left: MutationsListNode<T>?, right: MutationsListNode<T>?) -> MutationsListNode<T>? {
+        if left == nil && right == nil {
+            return nil
+        } else if left != nil && right != nil {
+            if left!.value < right!.value {
+                left!.mutationsNext = merge(left: left!.mutationsNext, right: right!)
+                return left
+            } else {
+                right!.mutationsNext = merge(left: left!, right: right!.mutationsNext)
+                return right
+            }
+        } else if left != nil {
+            return left
+        } else {
+            return right
+        }
+    }
+    
+    if list == nil {
+        return nil
+    }
+    
+    let flattenPart = flattenSortMutationsList(for: list!.next)
+    list?.next = nil
+    return merge(left: list, right: flattenPart)
 }

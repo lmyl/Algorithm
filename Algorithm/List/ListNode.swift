@@ -7,7 +7,23 @@
 
 import Foundation
 
+/// 带头指针的链表
+class ListHeade<T>: CustomStringConvertible {
+    var next: ListNode<T>?
+    
+    static func makeList(for values: [T]) -> ListHeade<T> {
+        let heade = ListHeade()
+        heade.next = ListNode.makeList(for: values)
+        
+        return heade
+    }
+    
+    var description: String {
+        self.next?.description ?? ""
+    }
+}
 
+/// 普通单链表
 class ListNode<T>: CustomStringConvertible {
     var value: T
     
@@ -49,4 +65,18 @@ class ListNode<T>: CustomStringConvertible {
         return result
     }
     
+}
+
+/// 具有两个指针的变异链表
+class MutationsListNode<T> {
+    var value: T
+    
+    var next: MutationsListNode<T>?
+    var mutationsNext: MutationsListNode<T>?
+    
+    init(value: T, next: MutationsListNode<T>? = nil, mutationsNext: MutationsListNode<T>? = nil) {
+        self.value = value
+        self.next = next
+        self.mutationsNext = mutationsNext
+    }
 }

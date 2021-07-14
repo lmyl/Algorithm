@@ -350,6 +350,248 @@ class AlgorithmUnitTest: XCTestCase {
         XCTAssert(result! == "4,3,2,1,8,7,6,5,9,10,11")
     }
     
+    func testCombineAscendingOrderList() throws {
+        var customOne = ListNode<Int>.makeList(for: [])
+        var customTwo = ListNode<Int>.makeList(for: [])
+        var result = combineAscendingOrderList(for: customOne, and: customTwo)?.description
+        XCTAssert(result == nil)
+        
+        customOne = ListNode<Int>.makeList(for: [])
+        customTwo = ListNode<Int>.makeList(for: [1])
+        result = combineAscendingOrderList(for: customOne, and: customTwo)?.description
+        XCTAssert(result == "1")
+        
+        customOne = ListNode<Int>.makeList(for: [2])
+        customTwo = ListNode<Int>.makeList(for: [1])
+        result = combineAscendingOrderList(for: customOne, and: customTwo)?.description
+        XCTAssert(result == "1,2")
+        
+        customOne = ListNode<Int>.makeList(for: [2,4])
+        customTwo = ListNode<Int>.makeList(for: [1,3])
+        result = combineAscendingOrderList(for: customOne, and: customTwo)?.description
+        XCTAssert(result == "1,2,3,4")
+        
+        customOne = ListNode<Int>.makeList(for: [2,6])
+        customTwo = ListNode<Int>.makeList(for: [1,3,4,5])
+        result = combineAscendingOrderList(for: customOne, and: customTwo)?.description
+        XCTAssert(result == "1,2,3,4,5,6")
+        
+        customOne = ListNode<Int>.makeList(for: [2,6,7])
+        customTwo = ListNode<Int>.makeList(for: [3])
+        result = combineAscendingOrderList(for: customOne, and: customTwo)?.description
+        XCTAssert(result == "2,3,6,7")
+        
+        customOne = ListNode<Int>.makeList(for: [2,6,7])
+        customTwo = ListNode<Int>.makeList(for: [8])
+        result = combineAscendingOrderList(for: customOne, and: customTwo)?.description
+        XCTAssert(result == "2,6,7,8")
+    }
+    
+    func testRemoveNodeFromList() throws {
+        var result = removeNodeFromList(for: emptyList)
+        XCTAssertFalse(result)
+        
+        result = removeNodeFromList(for: oneElementList)
+        XCTAssertFalse(result)
+        XCTAssert(oneElementList!.description == "1")
+        
+        result = removeNodeFromList(for: twoElementList)
+        XCTAssertTrue(result)
+        XCTAssert(twoElementList!.description == "2")
+        
+        var custom = ListNode.makeList(for: [1,2])
+        result = removeNodeFromList(for: custom?.next)
+        XCTAssertFalse(result)
+        XCTAssert(custom!.description == "1,2")
+        
+        result = removeNodeFromList(for: thereElementList)
+        XCTAssertTrue(result)
+        XCTAssert(thereElementList!.description == "2,3")
+        
+        custom = ListNode.makeList(for: [1,2,3])
+        result = removeNodeFromList(for: custom?.next)
+        XCTAssertTrue(result)
+        XCTAssert(custom!.description == "1,3")
+        
+        custom = ListNode.makeList(for: [1,2,3,4])
+        result = removeNodeFromList(for: custom?.next?.next)
+        XCTAssertTrue(result)
+        XCTAssert(custom!.description == "1,2,4")
+    }
+    
+    func testInsertNodeBeforeNodeInList() throws {
+        var customNode = ListNode(value: 100)
+        insertNodeBeforeNodeInList(for: customNode, before: oneElementList!)
+        var result = oneElementList?.description
+        XCTAssert(result! == "100,1")
+        
+        customNode = ListNode(value: 100)
+        insertNodeBeforeNodeInList(for: customNode, before: twoElementList!)
+        result = twoElementList?.description
+        XCTAssert(result! == "100,1,2")
+        
+        customNode = ListNode(value: 100)
+        var customList = ListNode.makeList(for: [1,2])
+        insertNodeBeforeNodeInList(for: customNode, before: customList!.next!)
+        result = customList?.description
+        XCTAssert(result! == "1,100,2", result!)
+        
+        customNode = ListNode(value: 100)
+        insertNodeBeforeNodeInList(for: customNode, before: thereElementList!.next!.next!)
+        result = thereElementList?.description
+        XCTAssert(result! == "1,2,100,3")
+        
+        customNode = ListNode(value: 100)
+        customList = ListNode.makeList(for: [1,2,3])
+        insertNodeBeforeNodeInList(for: customNode, before: customList!.next!)
+        result = customList?.description
+        XCTAssert(result! == "1,100,2,3")
+    }
+    
+    func testIsCrossForList() throws {
+        trail(for: oneElementList)?.next = twoElementList?.next
+        XCTAssertTrue(isCross(for: oneElementList, and: twoElementList))
+        
+        trail(for: thereElementList)?.next = manyElementListV1?.next?.next
+        XCTAssertTrue(isCross(for: thereElementList, and: manyElementListV1))
+        
+        var custom = ListNode.makeList(for: [1,2,3,4,5])
+        XCTAssertFalse(isCross(for: custom, and: manyElementListV2))
+        
+        custom = ListNode.makeList(for: [1,2,3,4,5])
+        XCTAssertFalse(isCross(for: custom, and: emptyList))
+    }
+    
+    func testIsCrossWithRing() throws {
+        var custom = ListNode.makeList(for: [1,2,3,4,5,6,7,8])
+        var trailNode = trail(for: custom)
+        trailNode?.next = custom?.next
+        var result = isCrossWithRing(for: custom, and: emptyList)
+        XCTAssertFalse(result)
+        
+        custom = ListNode.makeList(for: [1,2,3,4,5,6,7,8])
+        trailNode = trail(for: custom)
+        trailNode?.next = custom?.next?.next
+        result = isCrossWithRing(for: custom, and: oneElementList)
+        XCTAssertFalse(result)
+        
+        custom = ListNode.makeList(for: [1,2,3,4,5,6,7,8])
+        trailNode = trail(for: custom)
+        trailNode?.next = trailNode
+        
+        var customTwo = ListNode.makeList(for: [1,2,3,4,5,6,7,8])
+        trailNode = trail(for: customTwo)
+        trailNode?.next = customTwo?.next?.next
+        result = isCrossWithRing(for: custom, and: customTwo)
+        XCTAssertFalse(result)
+        
+        custom = ListNode.makeList(for: [1,2,3,4,5,6,7,8])
+        trailNode = trail(for: custom)
+        trailNode?.next = trailNode
+        
+        customTwo = ListNode.makeList(for: [1,2,3,4,5,6,7,8])
+        trailNode = trail(for: customTwo)
+        trailNode?.next = custom?.next?.next
+        result = isCrossWithRing(for: custom, and: customTwo)
+        XCTAssertTrue(result)
+        
+        custom = ListNode.makeList(for: [1,2,3,4,5,6,7,8])
+        trailNode = trail(for: custom)
+        trailNode?.next = trailNode
+        
+        customTwo = ListNode.makeList(for: [1,2,3,4,5,6,7,8])
+        let trailNodeTwo = trail(for: customTwo)
+        trailNodeTwo?.next = trailNode
+        result = isCrossWithRing(for: custom, and: customTwo)
+        XCTAssertTrue(result)
+    }
+    
+    func testReverseMutationsList() throws {
+        let first = MutationsListNode(value: 1)
+        let two = MutationsListNode(value: 2)
+        let there = MutationsListNode(value: 3)
+        let four = MutationsListNode(value: 4)
+        
+        first.next = two
+        two.next = there
+        there.next = four
+        
+        first.mutationsNext = there
+        two.mutationsNext = first
+        there.mutationsNext = two
+        
+        let result = reverseMutationsList(for: first)
+        XCTAssert(result === four)
+        XCTAssert(result?.next === there)
+        XCTAssert(result?.next?.next === two)
+        XCTAssert(result?.mutationsNext == nil)
+        XCTAssert(result?.next?.mutationsNext === first)
+        XCTAssert(result?.next?.next?.mutationsNext === there)
+    }
+    
+    func testFlattenSortTreeMutationsList() throws {
+        let root = MutationsListNode(value: 3)
+        root.mutationsNext = MutationsListNode(value: 6)
+        root.mutationsNext?.mutationsNext = MutationsListNode(value: 8)
+        root.mutationsNext?.mutationsNext?.mutationsNext = MutationsListNode(value: 31)
+        root.next = MutationsListNode(value: 11)
+        root.next?.mutationsNext = MutationsListNode(value: 21)
+        root.next?.next = MutationsListNode(value: 15)
+        root.next?.next?.mutationsNext = MutationsListNode(value: 22)
+        root.next?.next?.mutationsNext?.mutationsNext = MutationsListNode(value: 50)
+        root.next?.next?.next = MutationsListNode(value: 30)
+        root.next?.next?.next?.mutationsNext = MutationsListNode(value: 39)
+        root.next?.next?.next?.mutationsNext?.mutationsNext = MutationsListNode(value: 40)
+        root.next?.next?.next?.mutationsNext?.mutationsNext?.mutationsNext = MutationsListNode(value: 55)
+        
+        let newRoot = flattenSortMutationsList(for: root)
+        var current = newRoot
+        
+        var resultString = ""
+        while let node = current {
+            resultString += "\(node.value)"
+            if node.mutationsNext != nil {
+                resultString += ","
+            }
+            current = node.mutationsNext
+        }
+        
+        XCTAssert(resultString == "3,6,8,11,15,21,22,30,31,39,40,50,55", resultString)
+    }
+    
+    func testFlattenSortMutationsList() throws {
+        let root = MutationsListNode(value: 3)
+        root.mutationsNext = MutationsListNode(value: 6)
+        root.mutationsNext?.mutationsNext = MutationsListNode(value: 8)
+        root.mutationsNext?.mutationsNext?.mutationsNext = MutationsListNode(value: 31)
+        root.next = MutationsListNode(value: 11)
+        root.next?.mutationsNext = MutationsListNode(value: 21)
+        root.next?.mutationsNext?.next = MutationsListNode(value: 33)
+        root.next?.next = MutationsListNode(value: 15)
+        root.next?.next?.mutationsNext = MutationsListNode(value: 22)
+        root.next?.next?.mutationsNext?.mutationsNext = MutationsListNode(value: 50)
+        root.next?.next?.mutationsNext?.mutationsNext?.mutationsNext = MutationsListNode(value: 52)
+        root.next?.next?.mutationsNext?.mutationsNext?.next = MutationsListNode(value: 51)
+        root.next?.next?.next = MutationsListNode(value: 30)
+        root.next?.next?.next?.mutationsNext = MutationsListNode(value: 39)
+        root.next?.next?.next?.mutationsNext?.mutationsNext = MutationsListNode(value: 40)
+        root.next?.next?.next?.mutationsNext?.mutationsNext?.mutationsNext = MutationsListNode(value: 55)
+        
+        let newRoot = flattenSortTreeMutationsList(for: root)
+        var current = newRoot
+        
+        var resultString = ""
+        while let node = current {
+            resultString += "\(node.value)"
+            if node.next != nil {
+                resultString += ","
+            }
+            current = node.next
+        }
+        
+        XCTAssert(resultString == "3,6,8,11,15,21,22,30,31,33,39,40,50,51,52,55", resultString)
+    }
+    
     func trail<T>(for list: ListNode<T>?) -> ListNode<T>? {
         var current = list
         if current == nil {
