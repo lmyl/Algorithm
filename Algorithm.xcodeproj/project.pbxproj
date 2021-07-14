@@ -10,9 +10,16 @@
 		080E5947269BE37B00DEE9AD /* ListNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080E5946269BE37B00DEE9AD /* ListNode.swift */; };
 		080E5949269BE65000DEE9AD /* ListSolution.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080E5948269BE65000DEE9AD /* ListSolution.swift */; };
 		080E5951269C22DD00DEE9AD /* ListSolutionUnitTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080E5950269C22DD00DEE9AD /* ListSolutionUnitTest.swift */; };
-		080E5956269C26DD00DEE9AD /* ListNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080E5946269BE37B00DEE9AD /* ListNode.swift */; };
-		080E5957269C26E000DEE9AD /* ListSolution.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080E5948269BE65000DEE9AD /* ListSolution.swift */; };
 		08A9B201269BE21C000CA585 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A9B200269BE21C000CA585 /* main.swift */; };
+		08AC466A269E808B0055E681 /* StackQueueHashSolution.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08AC4669269E808B0055E681 /* StackQueueHashSolution.swift */; };
+		08AC466C269E809C0055E681 /* Stack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08AC466B269E809C0055E681 /* Stack.swift */; };
+		08AC466E269E81770055E681 /* Queue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08AC466D269E81770055E681 /* Queue.swift */; };
+		08AC4670269E83460055E681 /* StackQueueHashUnitTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08AC466F269E83460055E681 /* StackQueueHashUnitTest.swift */; };
+		08AC4671269E83A90055E681 /* Queue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08AC466D269E81770055E681 /* Queue.swift */; };
+		08AC4672269E83A90055E681 /* ListNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080E5946269BE37B00DEE9AD /* ListNode.swift */; };
+		08AC4673269E83A90055E681 /* ListSolution.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080E5948269BE65000DEE9AD /* ListSolution.swift */; };
+		08AC4674269E83A90055E681 /* Stack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08AC466B269E809C0055E681 /* Stack.swift */; };
+		08AC4675269E83A90055E681 /* StackQueueHashSolution.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08AC4669269E808B0055E681 /* StackQueueHashSolution.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -35,6 +42,10 @@
 		080E5952269C22DD00DEE9AD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		08A9B1FD269BE21C000CA585 /* Algorithm */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Algorithm; sourceTree = BUILT_PRODUCTS_DIR; };
 		08A9B200269BE21C000CA585 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		08AC4669269E808B0055E681 /* StackQueueHashSolution.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StackQueueHashSolution.swift; sourceTree = "<group>"; };
+		08AC466B269E809C0055E681 /* Stack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stack.swift; sourceTree = "<group>"; };
+		08AC466D269E81770055E681 /* Queue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Queue.swift; sourceTree = "<group>"; };
+		08AC466F269E83460055E681 /* StackQueueHashUnitTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StackQueueHashUnitTest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,7 +70,10 @@
 			isa = PBXGroup;
 			children = (
 				080E5946269BE37B00DEE9AD /* ListNode.swift */,
+				08AC466B269E809C0055E681 /* Stack.swift */,
+				08AC466D269E81770055E681 /* Queue.swift */,
 				080E5948269BE65000DEE9AD /* ListSolution.swift */,
+				08AC4669269E808B0055E681 /* StackQueueHashSolution.swift */,
 			);
 			path = List;
 			sourceTree = "<group>";
@@ -68,6 +82,7 @@
 			isa = PBXGroup;
 			children = (
 				080E5950269C22DD00DEE9AD /* ListSolutionUnitTest.swift */,
+				08AC466F269E83460055E681 /* StackQueueHashUnitTest.swift */,
 				080E5952269C22DD00DEE9AD /* Info.plist */,
 			);
 			path = AlgorithmUnitTest;
@@ -188,9 +203,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				080E5957269C26E000DEE9AD /* ListSolution.swift in Sources */,
 				080E5951269C22DD00DEE9AD /* ListSolutionUnitTest.swift in Sources */,
-				080E5956269C26DD00DEE9AD /* ListNode.swift in Sources */,
+				08AC4671269E83A90055E681 /* Queue.swift in Sources */,
+				08AC4670269E83460055E681 /* StackQueueHashUnitTest.swift in Sources */,
+				08AC4673269E83A90055E681 /* ListSolution.swift in Sources */,
+				08AC4675269E83A90055E681 /* StackQueueHashSolution.swift in Sources */,
+				08AC4674269E83A90055E681 /* Stack.swift in Sources */,
+				08AC4672269E83A90055E681 /* ListNode.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -199,8 +218,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				080E5949269BE65000DEE9AD /* ListSolution.swift in Sources */,
+				08AC466E269E81770055E681 /* Queue.swift in Sources */,
+				08AC466C269E809C0055E681 /* Stack.swift in Sources */,
 				08A9B201269BE21C000CA585 /* main.swift in Sources */,
 				080E5947269BE37B00DEE9AD /* ListNode.swift in Sources */,
+				08AC466A269E808B0055E681 /* StackQueueHashSolution.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
