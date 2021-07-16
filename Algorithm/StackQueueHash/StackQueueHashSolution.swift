@@ -122,6 +122,9 @@ func generateRouteLine(for source: [String: String]) -> [String] {
     return leftSource.reversed() + rightSource
 }
 
+/// 从数组中找出a+b=c+d，其中abcd均互不为同一个元素
+/// - Parameter source: 数据源
+/// - Returns: 查找出来的元素
 func fourSum<T: AdditiveArithmetic & Comparable & Hashable>(for source: [T]) -> ((T, T), (T, T))? {
     guard source.count >= 4 else {
         return nil
