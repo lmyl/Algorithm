@@ -91,3 +91,59 @@ func isSatisfiedForStack<T: Equatable>(inputs: [T], outputs: [T]) -> Bool {
         return false
     }
 }
+
+/// 根据每一段路线，恢复出整个路线，路线不带环，且路线只有一个起点和一个终点
+/// - Parameter source: 路线段
+/// - Returns: 整个路线
+func generateRouteLine(for source: [String: String]) -> [String] {
+    guard let first = source.first else {
+        return []
+    }
+    var reverse: [String: String] = [:]
+    for (key, value) in source {
+        reverse[value] = key
+    }
+    
+    var fragmentStart = first.key
+    var fragmentEnd = first.value
+    var rightSource: [String] = [fragmentEnd]
+    var leftSource: [String] = [fragmentStart]
+    
+    while let end = source[fragmentEnd] {
+        fragmentEnd = end
+        rightSource.append(end)
+    }
+    
+    while let start = reverse[fragmentStart] {
+        fragmentStart = start
+        leftSource.append(start)
+    }
+    
+    return leftSource.reversed() + rightSource
+}
+
+func fourSum<T: AdditiveArithmetic & Comparable & Hashable>(for source: [T]) -> ((T, T), (T, T))? {
+    guard source.count >= 4 else {
+        return nil
+    }
+    var sumMap: [T: (Int, Int)] = [:]
+    
+    for index in 0 ..< source.count {
+        let value1 = source[index]
+        for another in (index + 1) ..< source.count {
+            let value2 = source[another]
+            let sum = value2 + value1
+            if let coupleIndex = sumMap[sum] {
+                if coupleIndex.0 == index || coupleIndex.0 == another || coupleIndex.1 == index || coupleIndex.1 == another {
+                    continue
+                } else {
+                    return ((source[coupleIndex.0], source[coupleIndex.1]), (value1, value2))
+                }
+            } else {
+                sumMap[sum] = (index, another)
+            }
+        }
+    }
+    
+    return nil
+}

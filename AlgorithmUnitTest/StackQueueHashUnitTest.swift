@@ -140,6 +140,52 @@ class StackQueueHashUnitTest: XCTestCase {
         XCTAssert(users[2].location == 2)
         XCTAssert(users[4].location == 3)
     }
+    
+    func testLRUCache() throws {
+        let lruCache = LRUCache<Page>(maxSize: 3)
+        XCTAssert(lruCache.fetch(id: 1) == nil)
+        
+        let one = Page(uuid: 1)
+        lruCache.push(content: one)
+        XCTAssert(lruCache.fetch(id: 1) === one)
+        
+        let two = Page(uuid: 2)
+        lruCache.push(content: two)
+        XCTAssert(lruCache.fetch(id: 2) === two)
+        
+        let three = Page(uuid: 3)
+        lruCache.push(content: three)
+        XCTAssert(lruCache.fetch(id: 3) === three)
+        
+        XCTAssert(lruCache.fetch(id: 1) === one)
+        
+        let four = Page(uuid: 4)
+        lruCache.push(content: four)
+        XCTAssert(lruCache.fetch(id: 4) === four)
+        XCTAssert(lruCache.fetch(id: 2) == nil)
+    }
+    
+    func testGenerateRouteLine() throws {
+        var route = ["A": "B", "C": "D", "D": "A", "B": "E"]
+        XCTAssert(generateRouteLine(for: route) == ["C", "D", "A", "B", "E"])
+        
+        route = ["C": "D", "D": "A"]
+        XCTAssert(generateRouteLine(for: route) == ["C", "D", "A"])
+    }
+    
+    func testFourSum() throws {
+        var source = [1,1,1,1]
+        var result = fourSum(for: source)
+        XCTAssert(result != nil && result!.0.0 + result!.0.1 == result!.1.0 + result!.1.1)
+        
+        source = [3,4,7,10,20,9,8]
+        result = fourSum(for: source)
+        XCTAssert(result != nil && result!.0.0 + result!.0.1 == result!.1.0 + result!.1.1)
+        
+        source = [1,10,12,33,99,200]
+        result = fourSum(for: source)
+        XCTAssert(result == nil)
+    }
 }
 
 
