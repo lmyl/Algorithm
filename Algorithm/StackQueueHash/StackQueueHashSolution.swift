@@ -56,3 +56,38 @@ func sort<T: Comparable>(stack: Stack<T>) {
         return
     }
 }
+
+
+/// 给定入栈顺序和可能的出栈顺序,判断是否可以满足指定的出栈顺序
+/// - Parameters:
+///   - inputs: 入栈顺序
+///   - outputs: 可能的出栈顺序
+/// - Returns: 是否满足
+func isSatisfiedForStack<T: Equatable>(inputs: [T], outputs: [T]) -> Bool {
+    guard inputs.count == outputs.count else {
+        return false
+    }
+    
+    let stack = Stack<T>()
+    
+    var outputStatsfied = outputs.startIndex
+    
+    for input in inputs {
+        stack.push(element: input)
+        
+        while !stack.isEmpty {
+            if let top = stack.top, top == outputs[outputStatsfied] {
+                _ = stack.pop()
+                outputStatsfied += 1
+            } else {
+                break
+            }
+        }
+    }
+    
+    if stack.isEmpty {
+        return true
+    } else {
+        return false
+    }
+}
