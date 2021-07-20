@@ -144,5 +144,146 @@ class BinaryTreeUnitTest: XCTestCase {
         
         XCTAssert(distanceBetweenWithNodes(for: root, first: root.left!.left!.left!, second: root.left!) == 2)
     }
+    
+    func testCopyBinaryTree() throws {
+        let root = BinaryTreeNode(value: 4)
+        root.left = BinaryTreeNode(value: 2)
+        root.right = BinaryTreeNode(value: 6)
+        root.left?.left = BinaryTreeNode(value: 1)
+        root.left?.right = BinaryTreeNode(value: 3)
+        root.right?.left = BinaryTreeNode(value: 5)
+        root.right?.right = BinaryTreeNode(value: 7)
+        
+        let copy = copyBinaryTree(for: root)
+        XCTAssertTrue(equalBinaryTree(for: copy, second: root))
+    }
+    
+    func testFindTrace() throws {
+        let root = BinaryTreeNode(value: 6)
+        root.left = BinaryTreeNode(value: 3)
+        root.right = BinaryTreeNode(value: -7)
+        root.left?.left = BinaryTreeNode(value: -1)
+        root.left?.right = BinaryTreeNode(value: 9)
+        
+        var traces = findTrace(for: root, equal: 8)
+        XCTAssert(traces.count == 3)
+        XCTAssert(traces[0] === root)
+        XCTAssert(traces[1] === root.left)
+        XCTAssert(traces[2] === root.left?.left)
+        
+        traces = findTrace(for: root, equal: 7)
+        XCTAssert(traces.count == 0)
+        
+        traces = findTrace(for: root, equal: -1)
+        XCTAssert(traces.count == 2)
+        XCTAssert(traces[0] === root)
+        XCTAssert(traces[1] === root.right)
+    }
+    
+    func testMirrorBinaryTree() throws {
+        let root = BinaryTreeNode(value: 4)
+        root.left = BinaryTreeNode(value: 2)
+        root.right = BinaryTreeNode(value: 6)
+        root.left?.left = BinaryTreeNode(value: 1)
+        root.left?.right = BinaryTreeNode(value: 3)
+        root.right?.left = BinaryTreeNode(value: 5)
+        root.right?.right = BinaryTreeNode(value: 7)
+        
+        mirrorBinaryTree(for: root)
+        XCTAssert(root.description == "4\n6,2\n7,5,3,1")
+    }
+    
+    func testFindFirstMaxThanMiddleForSortBinaryTree() throws {
+        let root = BinaryTreeNode(value: 4)
+        root.left = BinaryTreeNode(value: 2)
+        root.right = BinaryTreeNode(value: 6)
+        root.left?.left = BinaryTreeNode(value: 1)
+        root.left?.right = BinaryTreeNode(value: 3)
+        root.right?.left = BinaryTreeNode(value: 5)
+        root.right?.right = BinaryTreeNode(value: 7)
+        
+        XCTAssert(findFirstMaxThanMiddleForSortBinaryTree(for: root) === root.right?.left)
+    }
+    
+    func testFindMaxSumTrace() throws {
+        var root = BinaryTreeNode(value: 4)
+        XCTAssert(findMaxSumTrace(for: root) == nil)
+        
+        root = BinaryTreeNode(value: 4)
+        root.left = BinaryTreeNode(value: 2)
+        XCTAssert(findMaxSumTrace(for: root) == 6)
+        
+        root = BinaryTreeNode(value: 4)
+        root.left = BinaryTreeNode(value: -2)
+        XCTAssert(findMaxSumTrace(for: root) == 2)
+        
+        root = BinaryTreeNode(value: 4)
+        root.left = BinaryTreeNode(value: -2)
+        root.right = BinaryTreeNode(value: 6)
+        XCTAssert(findMaxSumTrace(for: root) == 10)
+        
+        root = BinaryTreeNode(value: 4)
+        root.left = BinaryTreeNode(value: -2)
+        root.right = BinaryTreeNode(value: -6)
+        XCTAssert(findMaxSumTrace(for: root) == 2)
+        
+        root = BinaryTreeNode(value: 4)
+        root.left = BinaryTreeNode(value: 2)
+        root.left?.right = BinaryTreeNode(value: 3)
+        XCTAssert(findMaxSumTrace(for: root) == 9)
+        
+        root = BinaryTreeNode(value: 4)
+        root.left = BinaryTreeNode(value: 2)
+        root.left?.right = BinaryTreeNode(value: -3)
+        XCTAssert(findMaxSumTrace(for: root) == 6)
+        
+        root = BinaryTreeNode(value: 4)
+        root.left = BinaryTreeNode(value: 2)
+        root.left?.right = BinaryTreeNode(value: -3)
+        root.right = BinaryTreeNode(value: 6)
+        XCTAssert(findMaxSumTrace(for: root) == 12)
+        
+        root = BinaryTreeNode(value: 4)
+        root.left = BinaryTreeNode(value: -2)
+        root.left?.right = BinaryTreeNode(value: 3)
+        root.right = BinaryTreeNode(value: -6)
+        root.right?.left = BinaryTreeNode(value: 25)
+        XCTAssert(findMaxSumTrace(for: root) == 24)
+        
+        root = BinaryTreeNode(value: 4)
+        root.left = BinaryTreeNode(value: 2)
+        root.right = BinaryTreeNode(value: 6)
+        root.left?.left = BinaryTreeNode(value: 1)
+        root.left?.right = BinaryTreeNode(value: 3)
+        root.right?.left = BinaryTreeNode(value: 5)
+        root.right?.right = BinaryTreeNode(value: 7)
+        XCTAssert(findMaxSumTrace(for: root) == 22)
+    }
+    
+    func testDNSServer() throws {
+        let dns = DNSServer()
+        let ipV1 = "74.125.200.106"
+        let domainV1 = "google.com"
+        XCTAssert(dns.query(for: ipV1) == nil)
+        
+        XCTAssertTrue(dns.set(ip: ipV1, to: domainV1))
+        XCTAssert(dns.query(for: ipV1) == domainV1)
+        
+        let domainV2 = "www.baidu.com"
+        XCTAssertTrue(dns.set(ip: ipV1, to: domainV2))
+        XCTAssert(dns.query(for: ipV1) == domainV2)
+        
+        let ipV2 = "74.125.200.200"
+        XCTAssertTrue(dns.set(ip: ipV2, to: domainV2))
+        XCTAssert(dns.query(for: ipV2) == domainV2)
+        
+        XCTAssertTrue(dns.clear(ip: ipV2))
+        XCTAssert(dns.query(for: ipV2) == nil)
+        XCTAssert(dns.query(for: ipV1) == domainV2)
+        
+        XCTAssert(dns.query(for: "333.3499.2.4") == nil)
+        XCTAssertTrue(dns.clear(ip: "333.3499.2.4"))
+        XCTAssertFalse(dns.clear(ip: "74.1259.2.4"))
+    }
 }
 

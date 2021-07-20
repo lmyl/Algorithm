@@ -360,3 +360,215 @@ func distanceBetweenWithNodes<T>(for root: BinaryTreeNode<T>, first: BinaryTreeN
     
     return leftDistance + rightDistance
 }
+
+/// 复制一颗二叉树
+/// - Parameter root: 根结点
+/// - Returns: 复制后的二叉树根节点
+func copyBinaryTree<T>(for root: BinaryTreeNode<T>) -> BinaryTreeNode<T> {
+    let copyRoot = BinaryTreeNode(value: root.value)
+    if let left = root.left {
+        copyRoot.left = copyBinaryTree(for: left)
+    }
+    if let right = root.right {
+        copyRoot.right = copyBinaryTree(for: right)
+    }
+    return copyRoot
+}
+
+/// 二叉树中找到一条路径，使路径上的节点值和等于指定值
+/// - Parameters:
+///   - root: 根节点
+///   - value: 指定值
+/// - Returns: 路径
+func findTrace<T: AdditiveArithmetic>(for root: BinaryTreeNode<T>, equal value: T) -> [BinaryTreeNode<T>] {
+    
+    var trace: [BinaryTreeNode<T>] = []
+    
+    func sumForTrace(trace: [BinaryTreeNode<T>]) -> T {
+        var values = trace.map{
+            $0.value
+        }
+        let first = values[0]
+        values.removeFirst()
+        return values.reduce(first, +)
+    }
+    
+    func isLeaf(for node: BinaryTreeNode<T>) -> Bool {
+        node.left == nil && node.right == nil
+    }
+    
+    func findLeafTrace(for root: BinaryTreeNode<T>, equal value: T) -> Bool {
+        trace.append(root)
+        
+        if isLeaf(for: root) && sumForTrace(trace: trace) == value {
+            return true
+        }
+        
+        var result = false
+        if let left = root.left {
+            result = findLeafTrace(for: left, equal: value)
+        }
+        
+        if result {
+            return true
+        }
+        
+        if let right = root.right {
+            result = findLeafTrace(for: right, equal: value)
+        }
+        
+        if result {
+            return true
+        }
+        
+        trace.removeLast()
+        return false
+    }
+    
+    if findLeafTrace(for: root, equal: value) {
+        return trace
+    } else {
+        return []
+    }
+}
+
+/// 镜像反转二叉树
+/// - Parameter root: 树的根节点
+func mirrorBinaryTree<T>(for root: BinaryTreeNode<T>) {
+    let temp = root.left
+    root.left = root.right
+    root.right = temp
+    
+    if let left = root.left {
+        mirrorBinaryTree(for: left)
+    }
+    if let right = root.right {
+        mirrorBinaryTree(for: right)
+    }
+}
+
+/// 在二叉搜索树中寻找第一个大于中间值的节点，BST中无相同值的节点
+/// - Parameter root: 树的根节点
+/// - Returns: 找到的节点
+func findFirstMaxThanMiddleForSortBinaryTree(for root: BinaryTreeNode<Int>) -> BinaryTreeNode<Int>? {
+    var left = root
+    while let node = left.left {
+        left = node
+    }
+    let minNode = left
+    var right = root
+    while let node = right.right {
+        right = node
+    }
+    let maxNode = right
+    if maxNode.value == minNode.value {
+        return nil
+    }
+    let middleValue = Double(maxNode.value + minNode.value) / 2
+    var currentNode = root
+    
+    while !((Double(currentNode.value) > middleValue && currentNode.left == nil) || (Double(currentNode.value) <= middleValue && currentNode.right == nil)) {
+        if Double(currentNode.value) > middleValue {
+            currentNode = currentNode.left!
+        } else {
+            currentNode = currentNode.right!
+        }
+    }
+    
+    return currentNode
+}
+
+/// 求二叉树中任意两个结点之间路径和的最大值
+/// - Parameter root: 根节点
+/// - Returns: 最大值
+func findMaxSumTrace<T: AdditiveArithmetic & Comparable>(for root: BinaryTreeNode<T>) -> T? {
+    var max: T?
+    func findMaxTrace(for root: BinaryTreeNode<T>) -> (left: T?, current: T, right: T?) {
+        var leftLeftValue: T?
+        var leftRightValue: T?
+        var leftValue: T?
+        if let left = root.left {
+            let value = findMaxTrace(for: left)
+            leftLeftValue = value.left
+            leftRightValue = value.right
+            leftValue = value.current
+        }
+         
+        var rightLeftValue: T?
+        var rightRightValue: T?
+        var rightValue: T?
+        if let right = root.right {
+            let value = findMaxTrace(for: right)
+            rightLeftValue = value.left
+            rightRightValue = value.right
+            rightValue = value.current
+        }
+        
+        var leftMaxValue: T?
+        if let lValue = leftValue {
+            var llMaxValue = lValue
+            if let llValue = leftLeftValue {
+                if llMaxValue + llValue > llMaxValue {
+                    llMaxValue += llValue
+                }
+            }
+            
+            var lrMaxValue = lValue
+            if let lrValue = leftRightValue {
+                if lrMaxValue + lrValue > lrMaxValue {
+                    lrMaxValue += lrValue
+                }
+            }
+            
+            leftMaxValue = llMaxValue > lrMaxValue ? llMaxValue : lrMaxValue
+        }
+        
+        var rightMaxValue: T?
+        if let rValue = rightValue {
+            var rlMaxValue = rValue
+            if let rlValue = rightLeftValue {
+                if rlMaxValue + rlValue > rlMaxValue {
+                    rlMaxValue += rlValue
+                }
+            }
+            
+            var rrMaxValue = rValue
+            if let rrValue = rightRightValue {
+                if rrMaxValue + rrValue > rrMaxValue {
+                    rrMaxValue += rrValue
+                }
+            }
+            
+            rightMaxValue = rlMaxValue > rrMaxValue ? rlMaxValue : rrMaxValue
+        }
+        
+        guard !(leftMaxValue == nil && rightMaxValue == nil) else {
+            return (leftMaxValue, root.value, rightMaxValue)
+        }
+        
+        let currentMax: T
+        if leftMaxValue == nil {
+            currentMax = root.value + rightMaxValue!
+        } else if rightMaxValue == nil {
+            currentMax = root.value + leftMaxValue!
+        } else {
+            let leftMax = root.value + leftMaxValue!
+            let rightMax = root.value + rightMaxValue!
+            let totalMax = root.value + leftMaxValue! + rightMaxValue!
+            let tempMax = leftMax > rightMax ? leftMax : rightMax
+            currentMax = tempMax > totalMax ? tempMax : totalMax
+        }
+        
+        if let maxValue = max {
+            max = maxValue > currentMax ? maxValue : currentMax
+        } else {
+            max = currentMax
+        }
+        
+        return (leftMaxValue, root.value, rightMaxValue)
+    }
+    
+    let _ = findMaxTrace(for: root)
+    
+    return max
+}
