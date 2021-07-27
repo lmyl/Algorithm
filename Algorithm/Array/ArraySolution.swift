@@ -791,3 +791,274 @@ func coverageTheMostPoint<T: Comparable & AdditiveArithmetic>(for source: [T], s
     
     return (maxPoint, Array(source[maxStart ... (maxStart + maxPoint - 1)]))
 }
+
+/// 判断请求是否可以在指定空间内被处理
+/// - Parameters:
+///   - requests: 请求所消耗的资源信息，(请求编号，计算时所需空间R，存放结果所放空间O),R >= O
+///   - space: 指定的空间大小
+/// - Returns: 是否可以计算所有请求并保存所有结果,如果可以则按处理顺序返回请求编号，否则为空数组
+func allRequestsCanBeProcessed<T: Comparable & AdditiveArithmetic>(for requests: [(Int, T, T)], in space: T) -> [Int] {
+    let sortRequests = requests.sorted(by: {
+        ($0.1 - $0.2) > ($1.1 - $1.2)
+    })
+    var remain = space
+    var currentCount = 0
+    while currentCount < sortRequests.count && remain >= sortRequests[currentCount].1 {
+        remain -= sortRequests[currentCount].2
+        currentCount += 1
+    }
+    
+    if currentCount == sortRequests.count {
+        return sortRequests.map{
+            $0.0
+        }
+    } else {
+        return []
+    }
+}
+
+/// 根据数组A构造B，B[i] = A[0] * ... *A[n-1] / A[i]，构造过程不允许使用除法，O1空间复杂度，
+/// On时间复杂度，除了遍历计数器和数组元素访问A[i]B[i]外不允许使用任何其他变量
+/// - Parameter source: 初始数组
+/// - Returns: 新数组
+func makeSpecialArray<T: Numeric>(from source: [T]) -> [T] {
+    guard source.count >= 1 else {
+        return []
+    }
+    var results = Array<T>(repeating: source[0], count: source.count)
+    var count = 0
+    while count < source.count - 1 {
+        if count == 0 {
+            results[count + 1] = source[count]
+        } else {
+            results[count + 1] = source[count] * results[count]
+        }
+        count += 1
+    }
+    count = source.count - 1
+    while count > 0 {
+        if count == source.count - 1 {
+            results[0] = source[count]
+        } else {
+            results[count] = results[count] * results[0]
+            results[0] = source[count] * results[0]
+        }
+        count -= 1
+    }
+    return results
+}
+
+/// 多个矩阵相乘，找出操作所需乘法数量最小的数量
+/// - Parameter source: 矩阵序列
+/// - Returns: 最小的乘法数量
+func matrixChainOrder(for source: [Int]) -> Int {
+    guard source.count >= 3 else {
+        return 0
+    }
+    var distances = Array<[Int]>.init(repeating: Array<Int>.init(repeating: -1, count: source.count - 1), count: source.count - 1)
+    for index in 0 ..< source.count - 1 {
+        distances[index][index] = 0
+    }
+    
+    for chainLength in 2 ... (source.count - 1) {
+        for start in 0 ... (source.count - chainLength - 1) {
+            for middle in start ..< (start + chainLength - 1) {
+                let distance = distances[start][middle] + distances[middle + 1][start + chainLength - 1] + source[start] * source[middle + 1] * source[start + chainLength]
+                if distances[start][start + chainLength - 1] == -1 {
+                    distances[start][start + chainLength - 1] = distance
+                } else if distance < distances[start][start + chainLength - 1] {
+                    distances[start][start + chainLength - 1] = distance
+                }
+            }
+        }
+    }
+    
+    return distances[0][source.count - 2]
+}
+
+
+/// 走迷宫，每一步只能向下或者向右，从左上方到右下方，每一个1表示有路，0表示无路
+/// - Parameter sources: 迷宫
+/// - Returns: 路径数组
+func sloveMaze(for sources: [[Int]]) -> [(Int, Int)] {
+    var copySource = sources
+    var traceStack = [(-1, (0, 0))]
+    let destionPoint = (copySource.count - 1, copySource[0].count - 1)
+    
+    while !traceStack.isEmpty {
+        if traceStack.last!.1 == destionPoint {
+            break
+        }
+        let current = traceStack.last!.1
+        copySource[current.0][current.1] = 0
+        if current.0 + 1 <= copySource.count - 1 && copySource[current.0 + 1][current.1] == 1 {
+            traceStack.append((traceStack.count - 1,(current.0 + 1, current.1)))
+            continue
+        }
+        if current.1 + 1 <= copySource[0].count - 1 && copySource[current.0][current.1 + 1] == 1 {
+            traceStack.append((traceStack.count - 1,(current.0, current.1 + 1)))
+            continue
+        }
+        traceStack.removeLast()
+        
+    }
+    if traceStack.isEmpty {
+        return []
+    }
+    var traces: [(Int, Int)] = []
+    var currentIndex = traceStack.count - 1
+    while currentIndex != 0 {
+        traces.append(traceStack[currentIndex].1)
+        currentIndex = traceStack[currentIndex].0
+    }
+    traces.append(traceStack[0].1)
+    traces.reverse()
+    
+    return traces
+}
+
+
+/// 三个非递减排序的数组，找出其中所有的公共元素
+/// - Parameters:
+///   - first: 第一个数组
+///   - second: 第二个数组
+///   - third: 第三个数组
+/// - Returns: 公共元素
+func findCommonElement<T: Comparable & Hashable>(from first: [T], second: [T], third: [T]) -> [T] {
+    guard first.count >= 1 && second.count >= 1 && third.count >= 1 else {
+        return []
+    }
+    var commonElements: Set<T> = []
+    var firstIndex = 0
+    var secondIndex = 0
+    var thirdIndex = 0
+    
+    while firstIndex < first.count && secondIndex < second.count && thirdIndex < third.count {
+        if first[firstIndex] < second[secondIndex] && first[firstIndex] < third[thirdIndex] {
+            firstIndex += 1
+            continue
+        }
+        
+        if second[secondIndex] < first[firstIndex] && second[secondIndex] < third[thirdIndex] {
+            secondIndex += 1
+            continue
+        }
+        
+        if third[thirdIndex] < second[secondIndex] && third[thirdIndex] < first[firstIndex] {
+            thirdIndex += 1
+            continue
+        }
+        
+        if first[firstIndex] == second[secondIndex] {
+            if first[firstIndex] == third[thirdIndex] {
+                commonElements.insert(first[firstIndex])
+                firstIndex += 1
+                secondIndex += 1
+                thirdIndex += 1
+                continue
+            } else if first[firstIndex] < third[thirdIndex] {
+                firstIndex += 1
+                secondIndex += 1
+                continue
+            } else {
+                thirdIndex += 1
+                continue
+            }
+        } else if first[firstIndex] == third[thirdIndex] {
+            if first[firstIndex] < second[secondIndex] {
+                firstIndex += 1
+                thirdIndex += 1
+                continue
+            } else if first[firstIndex] > second[secondIndex] {
+                secondIndex += 1
+                continue
+            } else {
+                fatalError("Error")
+            }
+        } else if second[secondIndex] == third[thirdIndex] {
+            if second[secondIndex] < first[firstIndex] {
+                secondIndex += 1
+                thirdIndex += 1
+                continue
+            } else if second[secondIndex] > first[firstIndex] {
+                firstIndex += 1
+                continue
+            } else {
+                fatalError("Error")
+            }
+        } else {
+            fatalError("Error")
+        }
+    }
+    
+    return Array(commonElements)
+}
+
+func sortLargeRepeatNumber<T: Comparable & Hashable>(for source: [T]) -> [T] {
+    var sourceMap: [T: Int] = [:]
+    for element in source {
+        if let count = sourceMap[element] {
+            sourceMap[element] = count + 1
+        } else {
+            sourceMap[element] = 1
+        }
+    }
+    
+    var sourceSort = sourceMap.map{
+        $0.key
+    }
+    
+    func adjustHeap(start: Int, end: Int) {
+        var parent = start
+        var son = 2 * parent + 1
+        while son <= end {
+            if son < end {
+                if sourceSort[son + 1] > sourceSort[son] {
+                    son = son + 1
+                }
+            }
+            if sourceSort[parent] < sourceSort[son] {
+                let temp = sourceSort[parent]
+                sourceSort[parent] = sourceSort[son]
+                sourceSort[son] = temp
+                
+                parent = son
+                son = 2 * parent + 1
+            } else {
+                break
+            }
+        }
+    }
+    
+    func makeHeap() {
+        for start in Array(0 ... (sourceSort.count - 2) / 2).reversed() {
+            adjustHeap(start: start, end: sourceSort.count - 1)
+        }
+    }
+    
+    func heapSort() {
+        guard sourceSort.count >= 2 else {
+            return
+        }
+        
+        makeHeap()
+        
+        for end in Array(0 ... sourceSort.count - 2).reversed() {
+            let temp = sourceSort[0]
+            sourceSort[0] = sourceSort[end + 1]
+            sourceSort[end + 1] = temp
+            
+            adjustHeap(start: 0, end: end)
+        }
+    }
+    
+    heapSort()
+    
+    var result: [T] = []
+    for element in sourceSort {
+        let count = sourceMap[element]!
+        result.append(contentsOf: Array.init(repeating: element, count: count))
+    }
+    
+    return result
+}

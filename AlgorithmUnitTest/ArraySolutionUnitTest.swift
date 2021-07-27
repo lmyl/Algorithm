@@ -237,4 +237,49 @@ class ArraySolutionUnitTest: XCTestCase  {
         XCTAssert(coverageTheMostPoint(for: source, stick: 2) == (3, [10,11,12]))
         XCTAssert(coverageTheMostPoint(for: source, stick: 1) == (2, [7,8]))
     }
+    
+    func testAllRequestsCanBeProcessed() throws {
+        let requests = [(1,10,2),(2,15,7),(3,23,8),(4,20,4),(5,6,5),(6,9,8),(7,7,6),(8,16,8)]
+        XCTAssert(allRequestsCanBeProcessed(for: requests, in: 50) == [4,3,1,2,8,5,6,7])
+    }
+    
+    func testMakeSpecialArray() throws {
+        let source = [1,2,3,4,5,6,7,8,9,10]
+        let mutiple = source.reduce(1, *)
+        let result = source.map{
+            mutiple / $0
+        }
+        XCTAssert(makeSpecialArray(from: source) == result)
+    }
+    
+    func testMatrixChainOrder() throws {
+        let source = [1,5,2,4,6]
+        XCTAssert(matrixChainOrder(for: source) == 42)
+    }
+    
+    func testSloveMaze() throws {
+        var maze = [[1,0,0,0],[1,1,0,1],[0,1,0,0],[1,1,1,1]]
+        let standard = [(0,0),(1,0),(1,1),(2,1),(3,1),(3,2),(3,3)]
+        var sloves = sloveMaze(for: maze)
+        for (index, slove) in sloves.enumerated() {
+            XCTAssert(slove == standard[index])
+        }
+        
+        maze = [[1,0,0,0],[1,1,0,1],[0,1,0,0],[1,1,0,1]]
+        sloves = sloveMaze(for: maze)
+        XCTAssert(sloves.count == 0)
+    }
+    
+    func testFindCommonElement() throws {
+        let first = [2,5,12,20,45,85]
+        let second = [16,19,20,85,200]
+        let third = [3,4,15,20,39,72,85,190]
+        let common = [20,85]
+        XCTAssert(findCommonElement(from: first, second: second, third: third) == common)
+    }
+    
+    func testSortLargeRepeatNumber() throws {
+        let source = [15,12,15,2,2,12,2,3,12,100,3,3]
+        XCTAssert(sortLargeRepeatNumber(for: source) == source.sorted())
+    }
 }
