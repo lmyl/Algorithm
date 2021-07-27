@@ -34,6 +34,9 @@
 		08D6934426A1667F005F2418 /* BinaryTreeSolution.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08D6934226A1667F005F2418 /* BinaryTreeSolution.swift */; };
 		08F9FFF9269FDF8D00779F20 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F9FFF8269FDF8D00779F20 /* User.swift */; };
 		08F9FFFA269FDF8D00779F20 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F9FFF8269FDF8D00779F20 /* User.swift */; };
+		08FDF39E26AFE5F800F1EDA0 /* StringUnitTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08FDF39D26AFE5F800F1EDA0 /* StringUnitTest.swift */; };
+		08FDF3A026AFE63000F1EDA0 /* StringSolution.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08FDF39F26AFE63000F1EDA0 /* StringSolution.swift */; };
+		08FDF3A126AFE63300F1EDA0 /* StringSolution.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08FDF39F26AFE63000F1EDA0 /* StringSolution.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -68,6 +71,8 @@
 		08D6933F26A16653005F2418 /* BinaryTreeUnitTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinaryTreeUnitTest.swift; sourceTree = "<group>"; };
 		08D6934226A1667F005F2418 /* BinaryTreeSolution.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinaryTreeSolution.swift; sourceTree = "<group>"; };
 		08F9FFF8269FDF8D00779F20 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		08FDF39D26AFE5F800F1EDA0 /* StringUnitTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringUnitTest.swift; sourceTree = "<group>"; };
+		08FDF39F26AFE63000F1EDA0 /* StringSolution.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringSolution.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -104,6 +109,7 @@
 				08AC466F269E83460055E681 /* StackQueueHashUnitTest.swift */,
 				08D6933F26A16653005F2418 /* BinaryTreeUnitTest.swift */,
 				08D6921326A7BA6A006E1055 /* ArraySolutionUnitTest.swift */,
+				08FDF39D26AFE5F800F1EDA0 /* StringUnitTest.swift */,
 				080E5952269C22DD00DEE9AD /* Info.plist */,
 			);
 			path = AlgorithmUnitTest;
@@ -138,6 +144,7 @@
 		08A9B1FF269BE21C000CA585 /* Algorithm */ = {
 			isa = PBXGroup;
 			children = (
+				08FDF39C26AFE5E500F1EDA0 /* String */,
 				08D6920F26A7B9A4006E1055 /* Array */,
 				08D6933B26A165E3005F2418 /* BinaryTree */,
 				08F9FFFB26A00A1600779F20 /* StackQueueHash */,
@@ -191,6 +198,14 @@
 				08D6933826A11EAC005F2418 /* LRU.swift */,
 			);
 			path = LRU;
+			sourceTree = "<group>";
+		};
+		08FDF39C26AFE5E500F1EDA0 /* String */ = {
+			isa = PBXGroup;
+			children = (
+				08FDF39F26AFE63000F1EDA0 /* StringSolution.swift */,
+			);
+			path = String;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -282,11 +297,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				08D6933A26A11EAC005F2418 /* LRU.swift in Sources */,
+				08FDF3A126AFE63300F1EDA0 /* StringSolution.swift in Sources */,
 				080E5951269C22DD00DEE9AD /* ListSolutionUnitTest.swift in Sources */,
 				08D6921426A7BA6A006E1055 /* ArraySolutionUnitTest.swift in Sources */,
 				08D6934126A16653005F2418 /* BinaryTreeUnitTest.swift in Sources */,
 				08D6933E26A165F1005F2418 /* BinaryTree.swift in Sources */,
 				08AC4671269E83A90055E681 /* Queue.swift in Sources */,
+				08FDF39E26AFE5F800F1EDA0 /* StringUnitTest.swift in Sources */,
 				08AC4670269E83460055E681 /* StackQueueHashUnitTest.swift in Sources */,
 				08AC4673269E83A90055E681 /* ListSolution.swift in Sources */,
 				08F9FFFA269FDF8D00779F20 /* User.swift in Sources */,
@@ -303,6 +320,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				08FDF3A026AFE63000F1EDA0 /* StringSolution.swift in Sources */,
 				080E5949269BE65000DEE9AD /* ListSolution.swift in Sources */,
 				0882932826A6B49F000B5F36 /* DNSServer.swift in Sources */,
 				08AC466E269E81770055E681 /* Queue.swift in Sources */,
