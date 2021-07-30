@@ -154,4 +154,22 @@ class StringUnitTest: XCTestCase {
         source = "-000"
         XCTAssert(judgeInteger(for: source) == 0)
     }
+    
+    func testMatchString() throws {
+        var substring = "abababaabcbab"
+        var pattern = "abaabc"
+        XCTAssert(match(pattern: pattern, subString: substring) == 4)
+        
+        substring = "a"
+        pattern = "b"
+        XCTAssert(match(pattern: pattern, subString: substring) == nil)
+    }
+    
+    func testMaxLengthBackSchist() throws {
+        var source = "abcdefgfedxyz"
+        XCTAssert(maxLengthBackSchist(for: source) == "defgfed")
+        
+        source = "abcbax"
+        XCTAssert(maxLengthBackSchist(for: source) == "abcba")
+    }
 }

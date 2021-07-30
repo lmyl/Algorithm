@@ -407,3 +407,94 @@ func judgeInteger(for string: String) -> Int? {
     }
     return position ? sum : -sum
 }
+
+/// 字符串匹配KMP算法
+/// - Parameters:
+///   - pattern: 模式串
+///   - subString: 子串
+/// - Returns: 在子串中匹配到的索引
+func match(pattern: String, subString: String) -> Int? {
+    func generateNexts() -> [Int] {
+        let patternCharacters = Array(pattern.unicodeScalars)
+        guard patternCharacters.count >= 1 else {
+            return []
+        }
+        var next = [-1]
+        guard patternCharacters.count >= 2 else {
+            return next
+        }
+        var count = 1
+        var k = -1
+        while count < patternCharacters.count {
+            if k == -1 || patternCharacters[count - 1] == patternCharacters[k] {
+                next.append(k+1)
+                count += 1
+                k += 1
+            } else {
+                k = next[k]
+            }
+        }
+        return next
+    }
+    let nexts = generateNexts()
+    let patternCharacters = Array(pattern.unicodeScalars)
+    let subStringCharacters = Array(subString.unicodeScalars)
+    var patternCount = 0
+    var subStringCount = 0
+    while patternCount < patternCharacters.count && subStringCount < subStringCharacters.count {
+        if patternCount == -1 || patternCharacters[patternCount] == subStringCharacters[subStringCount] {
+            patternCount += 1
+            subStringCount += 1
+        } else {
+            patternCount = nexts[patternCount]
+        }
+    }
+    
+    if patternCount >= patternCharacters.count {
+        return subStringCount - patternCharacters.count
+    }
+    return nil
+}
+
+/// 寻找最长的回文串
+/// - Parameter string: 初始字符串
+/// - Returns: 最长的回文串
+func maxLengthBackSchist(for string: String) -> String {
+    let characters = Array(string.unicodeScalars)
+    guard !characters.isEmpty else {
+        return ""
+    }
+    var informations: [[Bool]] = Array(repeating: Array(repeating: false, count: characters.count), count: characters.count)
+    
+    var maxLength = 1
+    var maxStartIndex = 0
+    
+    for index in 0 ..< characters.count {
+        informations[index][index] = true
+    }
+    
+    for index in 0 ..< characters.count - 1 {
+        if characters[index] == characters[index + 1] {
+            if 2 > maxLength {
+                maxLength = 2
+                maxStartIndex = index
+            }
+            informations[index][index + 1] = true
+        }
+    }
+    
+    for step in 1 ... characters.count - 2 {
+        for start in 1 ... characters.count - 1 - step {
+            let end = start + step - 1
+            if informations[start][end] && characters[start - 1] == characters[end + 1] {
+                if end - start + 3 > maxLength {
+                    maxLength = end - start + 3
+                    maxStartIndex = start - 1
+                }
+                informations[start - 1][end + 1] = true
+            }
+        }
+    }
+    
+    return String(String.UnicodeScalarView(characters[maxStartIndex ... maxStartIndex + maxLength - 1]))
+}
