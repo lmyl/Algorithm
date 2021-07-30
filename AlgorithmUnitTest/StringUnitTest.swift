@@ -172,4 +172,9 @@ class StringUnitTest: XCTestCase {
         source = "abcbax"
         XCTAssert(maxLengthBackSchist(for: source) == "abcba")
     }
+    
+    func testDictionarySortString() throws {
+        let source = ["bed", "dog", "dea", "ee"]
+        XCTAssert(dictionarySort(for: source) == ["dea", "dog", "ee", "bed"])
+    }
 }

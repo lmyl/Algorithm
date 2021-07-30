@@ -498,3 +498,95 @@ func maxLengthBackSchist(for string: String) -> String {
     
     return String(String.UnicodeScalarView(characters[maxStartIndex ... maxStartIndex + maxLength - 1]))
 }
+
+
+/// 已知字母序列[d,g,e,c,f,b,o,a]
+/// - Parameter strings: 一组字符串
+/// - Returns: 排序好的字符串
+func dictionarySort(for strings: [String]) -> [String] {
+    let defineCharacters: [Character] = ["d", "g", "e", "c", "f", "b", "o", "a"]
+    
+    func convertSerialToIndex(for character: Character) -> Int {
+        if let index = defineCharacters.firstIndex(of: character) {
+            return index
+        } else {
+            fatalError("Error")
+        }
+    }
+    
+    class Node: Root {
+        var value: Character
+        var isWord = false
+        
+        init(value: Character) {
+            self.value = value
+        }
+    }
+    
+    class Root {
+        var subChild: [Node?] = Array.init(repeating: nil, count: 8)
+        
+        func child(for index: Int) -> Node? {
+            subChild[index]
+        }
+        
+        func set(child: Node?, for index: Int) {
+            subChild[index] = child
+        }
+    }
+    
+    let root = Root()
+    
+    func insertWord(for word: String) {
+        let characters = Array(word)
+        guard !characters.isEmpty else {
+            return
+        }
+        var current: Node
+        if let head = root.child(for: convertSerialToIndex(for: characters[0])) {
+            current = head
+        } else {
+            current = Node(value: characters[0])
+            root.set(child: current, for: convertSerialToIndex(for: characters[0]))
+        }
+        
+        for index in 1 ..< characters.count {
+            let characterIndex = convertSerialToIndex(for: characters[index])
+            if let node = current.child(for: characterIndex) {
+                current = node
+            } else {
+                let new = Node(value: characters[index])
+                current.set(child: new, for: characterIndex)
+                current = new
+            }
+        }
+        
+        current.isWord = true
+    }
+    
+    for word in strings {
+        insertWord(for: word)
+    }
+    
+    var sortWords: [String] = []
+    var traces: [Character] = []
+    func sortTree(for node: Node) {
+        traces.append(node.value)
+        if node.isWord {
+            sortWords.append(String(traces))
+        }
+        for child in node.subChild where child != nil {
+            sortTree(for: child!)
+        }
+        traces.removeLast()
+    }
+    
+    func sortTree() {
+        for head in root.subChild where head != nil {
+            sortTree(for: head!)
+        }
+    }
+    
+    sortTree()
+    return sortWords
+}
