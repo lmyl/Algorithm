@@ -7,6 +7,9 @@
 
 import Foundation
 
+/// 字符串的全排列
+/// - Parameter string: 初始字符串
+/// - Returns: 全排列
 func allPermutations(for string: String) -> [String] {
     var characters = Array(string.unicodeScalars)
     
@@ -31,6 +34,9 @@ func allPermutations(for string: String) -> [String] {
     return results
 }
 
+/// 字符串的无重复全排列
+/// - Parameter string: 初始字符串
+/// - Returns: 全排列
 func allPermutationsWithoutRepeat(for string: String) -> [String] {
     var characters = Array(string.unicodeScalars)
     
@@ -589,4 +595,46 @@ func dictionarySort(for strings: [String]) -> [String] {
     
     sortTree()
     return sortWords
+}
+
+/// 判断一个字符串是否包含重复的字符
+/// - Parameter string: 初始字符串
+/// - Returns: 是否具有相同的字符
+func containRepeatCharacter(for string: String) -> Bool {
+    let characters = Array(string)
+    var charactersSet: Set<Character> = []
+    
+    for character in characters {
+        if charactersSet.contains(character) {
+            return true
+        } else {
+            charactersSet.insert(character)
+        }
+    }
+    return false
+}
+
+/// 从字符串中移除指定的字符
+/// - Parameters:
+///   - string: 字符串
+///   - with: 指定的字符
+/// - Returns: 处理之后的字符串
+func removeCharacter(in string: String, with: Character) -> String {
+    var characters = Array(string)
+    
+    var appearCount = 0
+    for (index, character) in characters.enumerated() {
+        if character == with {
+            appearCount += 1
+        } else {
+            characters[index - appearCount] = character
+        }
+    }
+    
+    if appearCount == 0 {
+        return string
+    }
+    
+    characters.removeSubrange(Range(characters.count - appearCount ... characters.count - 1))
+    return String(characters)
 }

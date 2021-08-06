@@ -177,4 +177,20 @@ class StringUnitTest: XCTestCase {
         let source = ["bed", "dog", "dea", "ee"]
         XCTAssert(dictionarySort(for: source) == ["dea", "dog", "ee", "bed"])
     }
+    
+    func testContainRepeatCharacter() throws {
+        var source = "good"
+        XCTAssertTrue(containRepeatCharacter(for: source))
+        
+        source = "abc"
+        XCTAssertFalse(containRepeatCharacter(for: source))
+    }
+    
+    func testRemoveCharacter() throws {
+        let source = "abcaabcxd"
+        XCTAssert(removeCharacter(in: source, with: "a") == "bcbcxd")
+        XCTAssert(removeCharacter(in: source, with: "b") == "acaacxd")
+        XCTAssert(removeCharacter(in: source, with: "x") == "abcaabcd")
+        XCTAssert(removeCharacter(in: source, with: "s") == "abcaabcxd")
+    }
 }
