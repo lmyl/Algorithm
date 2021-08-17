@@ -193,4 +193,59 @@ class StringUnitTest: XCTestCase {
         XCTAssert(removeCharacter(in: source, with: "x") == "abcaabcd")
         XCTAssert(removeCharacter(in: source, with: "s") == "abcaabcxd")
     }
+    
+    func testSearchElementInDictionaryTree() throws {
+        var result = searchElementInDictionaryTree(end: 10, sort: 1)
+        XCTAssert(result == 1)
+        
+        result = searchElementInDictionaryTree(end: 10, sort: 2)
+        XCTAssert(result == 10)
+        
+        result = searchElementInDictionaryTree(end: 10, sort: 3)
+        XCTAssert(result == 2)
+        
+        result = searchElementInDictionaryTree(end: 10, sort: 4)
+        XCTAssert(result == 3)
+        
+        result = searchElementInDictionaryTree(end: 10, sort: 10)
+        XCTAssert(result == 9)
+        
+        result = searchElementInDictionaryTree(end: 100, sort: 3)
+        XCTAssert(result == 100)
+        
+        result = searchElementInDictionaryTree(end: 100, sort: 5)
+        XCTAssert(result == 12)
+    }
+    
+    func testRemoveCharacterForAnother() throws {
+        let source = "They are students"
+        let another = "aeiou"
+        XCTAssert(removeCharacter(in: source, for: another) == "Thy r stdnts")
+    }
+    
+    func testFindMaxLengthStringComponentedByAnother() throws {
+        let source = ["test", "tester", "testertest", "testing", "apple", "seattle", "banana", "batting", "ngcat", "batti", "bat", "testingtester", "testbattingcat", "testbattingcatappl"]
+        XCTAssert(findMaxLengthStringComponentedByAnother(for: source) == "testbattingcat")
+    }
+    
+    func testMaxCountForAppearContinuously() throws {
+        var source = "cbaaabbcc"
+        XCTAssert(maxCountForAppearContinuously(for: source) == 3)
+        
+        source = "abbc"
+        XCTAssert(maxCountForAppearContinuously(for: source) == 2)
+        
+        source = "abc"
+        XCTAssert(maxCountForAppearContinuously(for: source) == 1)
+    }
+    
+    func testMaxLenghtIncreasingSubsequence() throws {
+        let source = Array("xbcdza")
+        XCTAssert(maxLenghtIncreasingSubsequence(for: source) == 4)
+    }
+    
+    func testSpinString() throws {
+        let source = "abcdefgh"
+        XCTAssert(spin(for: source, location: 3) == "fghabcde")
+    }
 }

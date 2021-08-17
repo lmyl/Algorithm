@@ -638,3 +638,280 @@ func removeCharacter(in string: String, with: Character) -> String {
     characters.removeSubrange(Range(characters.count - appearCount ... characters.count - 1))
     return String(characters)
 }
+
+/// 1-n共n个整数按照字典序排列，找到第k个数字
+/// - Parameters:
+///   - end: 表示n
+///   - sort: 表示k
+/// - Returns: 第k个数字
+func searchElementInDictionaryTree(end: Int, sort: Int) -> Int? {
+    var numberStack: [Int] = []
+    var nodeStack: [(Int, Int)] = []
+    
+    func computeNumberStack() -> Int {
+        var sum = 0
+        for number in numberStack {
+            sum = sum * 10 + number
+        }
+        return sum
+    }
+    
+    if sort > end || sort <= 0 {
+        return nil
+    }
+    
+    if end <= 0 {
+        return nil
+    }
+    
+    let root = (-1, 1)
+    nodeStack.append(root)
+    
+    var step = 0
+    var needAdd = false
+    while !nodeStack.isEmpty {
+        var current = nodeStack.last!
+        
+        if step == sort {
+            return computeNumberStack()
+        }
+        
+        if needAdd {
+            needAdd = false
+            current.1 += 1
+            if current.1 <= 9 {
+                nodeStack.removeLast()
+                nodeStack.append(current)
+            } else {
+                nodeStack.removeLast()
+                numberStack.removeLast()
+                needAdd = true
+                continue
+            }
+        }
+        
+        numberStack.append(current.1)
+        if computeNumberStack() > end {
+            numberStack.removeLast()
+            
+            nodeStack.removeLast()
+            numberStack.removeLast()
+            needAdd = true
+            continue
+        }
+        
+        let new = (current.1, 0)
+        nodeStack.append(new)
+        step += 1
+    }
+
+    return nil
+}
+
+/// 从字符串中移除在另一个字符串出现的字符
+/// - Parameters:
+///   - string: 待移除的字符串
+///   - for: 指定的字符串
+/// - Returns: 处理之后的字符串
+func removeCharacter(in string: String, for anOther: String) -> String {
+    var characters = Array(string)
+    let removedCharacters = Set(anOther)
+    var appearCount = 0
+    for (index, character) in characters.enumerated() {
+        if removedCharacters.contains(character) {
+            appearCount += 1
+        } else {
+            characters[index - appearCount] = character
+        }
+    }
+    
+    if appearCount == 0 {
+        return string
+    }
+    
+    characters.removeSubrange(Range(characters.count - appearCount ... characters.count - 1))
+    return String(characters)
+}
+
+/// 寻找一个最长的字符串，这个字符串可以由数组中其他的字符串组合合成
+/// - Parameter sources: 字符串数组
+/// - Returns: 满足条件的最长的字符串
+func findMaxLengthStringComponentedByAnother(for sources: [String]) -> String? {
+    
+    var sourceStrings = sources.map{
+        ($0.count, $0)
+    }
+    
+    func adjustHeap(start: Int, end: Int) {
+        var parent = start
+        var son = 2 * parent + 1
+        
+        while son <= end {
+            if son + 1 <= end {
+                if sourceStrings[son + 1].0 < sourceStrings[son].0 {
+                    son += 1
+                }
+            }
+            if sourceStrings[parent].0 > sourceStrings[son].0 {
+                let temp = sourceStrings[parent]
+                sourceStrings[parent] = sourceStrings[son]
+                sourceStrings[son] = temp
+                
+                parent = son
+                son = 2 * parent + 1
+            } else {
+                break
+            }
+        }
+    }
+    
+    func makeHeap() {
+        for index in stride(from: (sourceStrings.count - 2) / 2, through: 0, by: -1) {
+            adjustHeap(start: index, end: sourceStrings.count - 1)
+        }
+    }
+    
+    func heapSort() {
+        makeHeap()
+        
+        for end in stride(from: sourceStrings.count - 1, through: 1, by: -1) {
+            let temp = sourceStrings[end]
+            sourceStrings[end] = sourceStrings[0]
+            sourceStrings[0] = temp
+            
+            adjustHeap(start: 0, end: end - 1)
+        }
+    }
+    
+    heapSort()
+    
+    let hashTable = Set(sources)
+    
+    func innerRecursion(string: String) -> Bool {
+        if string.count == 1 {
+            if hashTable.contains(string) {
+                return true
+            } else {
+                return false
+            }
+        }
+        let characters = Array(string)
+        for index in 0 ..< characters.count - 1 {
+            let left = characters[0 ... index]
+            let leftString = String(left)
+            let right = characters[index + 1 ... characters.count - 1]
+            let rightString = String(right)
+            if hashTable.contains(leftString) && hashTable.contains(rightString) {
+                return true
+            } else if hashTable.contains(leftString) && innerRecursion(string: rightString) {
+                return true
+            } else if hashTable.contains(rightString) && innerRecursion(string: leftString) {
+                return true
+            }
+        }
+        return false
+    }
+    
+    for string in sourceStrings where string.0 > 1 {
+        if innerRecursion(string: string.1) {
+            return string.1
+        }
+    }
+    
+    return nil
+}
+
+/// 使用递归的方法，求字符串中连续出现相同字符的最大值
+/// - Parameter string: 字符串
+/// - Returns: 最大值
+func maxCountForAppearContinuously(for string: String) -> Int {
+    let characters = Array(string)
+    guard characters.count > 0 else {
+        return 0
+    }
+    var globeMax = 1
+    
+    func innerRecursion(start: Int) -> Int {
+        
+        if start == 0 {
+            return 1
+        }
+        let trailLength = innerRecursion(start: start - 1)
+        if characters[start - 1] == characters[start] {
+            if trailLength + 1 > globeMax {
+                globeMax = trailLength + 1
+            }
+            return trailLength + 1
+        } else {
+            return 1
+        }
+    }
+    
+    _ = innerRecursion(start: characters.count - 1)
+    return globeMax
+}
+
+/// 求最长的递增子序列
+/// - Parameter sources: 初始序列
+/// - Returns: 最长递增子序列的长度
+func maxLenghtIncreasingSubsequence<T: Comparable>(for sources: [T]) -> Int {
+    
+    var maxLengths = Array.init(repeating: 1, count: sources.count)
+    
+    for index in 0 ... sources.count - 1 {
+        if index == 0 {
+            maxLengths[index] = 1
+        } else {
+            var maxLength = 1
+            for inner in 0 ... index - 1 {
+                if sources[index] > sources[inner] {
+                    maxLength = max(maxLength, maxLengths[inner] + 1)
+                }
+            }
+            maxLengths[index] = maxLength
+        }
+    }
+    
+    return maxLengths.max()!
+}
+
+
+/// 旋转字符串，将尾部location长度的字符串放置到字符串头部
+/// - Parameters:
+///   - string: 初始字符串
+///   - location: 旋转位置
+/// - Returns: 旋转后的字符串
+func spin(for string: String, location: Int) -> String {
+    var characters = Array(string)
+    if location >= characters.count || location <= 0 {
+        return string
+    }
+    for index in 0 ... characters.count - location - 1 {
+        if characters.count - location - 1 - index <= index {
+            break
+        }
+        let temp = characters[index]
+        characters[index] = characters[characters.count - location - 1 - index]
+        characters[characters.count - location - 1 - index] = temp
+    }
+    
+    for index in characters.count - location ... characters.count - 1 {
+        if 2 * characters.count - 1 - location - index <= index {
+            break
+        }
+        let temp = characters[index]
+        characters[index] = characters[2 * characters.count - 1 - location - index]
+        characters[2 * characters.count - 1 - location - index] = temp
+    }
+    
+    for index in 0 ... characters.count - 1 {
+        if characters.count - 1 - index <= index {
+            break
+        }
+        let temp = characters[index]
+        characters[index] = characters[characters.count - 1 - index]
+        characters[characters.count - 1 - index] = temp
+    }
+    
+    return String(characters)
+}

@@ -22,9 +22,9 @@ class BinaryTreeUnitTest: XCTestCase {
         XCTAssert(root.description == "1\n2,3\n4,5,6,7")
     }
     
-    func testProductBinaryTree() throws {
+    func testgenerateBinaryTree() throws {
         let source = [1,2,3,4,5,6,7,8]
-        let root = productBinaryTree(from: source)
+        let root = generateBinaryTree(from: source)
         
         XCTAssert(root!.description == "5\n3,7\n2,4,6,8\n1", root!.description)
     }
@@ -103,7 +103,7 @@ class BinaryTreeUnitTest: XCTestCase {
         XCTAssert(result == [1,2,3,4,5,6,7])
         
         let source = [1,2,3,4,5,6,7]
-        let rootTwo = productBinaryTree(from: source)
+        let rootTwo = generateBinaryTree(from: source)
         list = convertSearchBinaryTreeToDoubleDirectList(for: rootTwo!)
         current = list
         result = []
@@ -130,7 +130,7 @@ class BinaryTreeUnitTest: XCTestCase {
     }
     
     func testFindCommonParentForBinaryTree() throws {
-        let root = productBinaryTree(from: [1,2,3,4,5,6,7,8,9,10])!
+        let root = generateBinaryTree(from: [1,2,3,4,5,6,7,8,9,10])!
         XCTAssert(findCommonParentForBinaryTree(for: root, first: root.left!.left!.left!, second: root.left!.right!) === root.left!)
         
         XCTAssert(findCommonParentForBinaryTree(for: root, first: root.left!.left!.left!, second: root.left!.right!.left!) === root.left!)
@@ -139,7 +139,7 @@ class BinaryTreeUnitTest: XCTestCase {
     }
     
     func testDistanceBetweenWithNodes() throws {
-        let root = productBinaryTree(from: [1,2,3,4,5,6,7,8,9,10])!
+        let root = generateBinaryTree(from: [1,2,3,4,5,6,7,8,9,10])!
         XCTAssert(distanceBetweenWithNodes(for: root, first: root.left!.left!.left!, second: root.left!.right!) == 3)
         
         XCTAssert(distanceBetweenWithNodes(for: root, first: root.left!.left!.left!, second: root.left!) == 2)
