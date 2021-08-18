@@ -248,4 +248,48 @@ class StringUnitTest: XCTestCase {
         let source = "abcdefgh"
         XCTAssert(spin(for: source, location: 3) == "fghabcde")
     }
+    
+    func testMaxLengthCommonSubstring() throws {
+        var source = "babcabc"
+        XCTAssert(maxLengthCommonSubstring(for: source) == "abc")
+        
+        source = "babcabd"
+        XCTAssert(maxLengthCommonSubstring(for: source) == "ab")
+    }
+    
+    func testMaxSubsquenceInDictionarySort() throws {
+        let source = "acbdxmng"
+        XCTAssert(maxSubsquenceInDictionarySort(for: source) == "xng")
+    }
+    
+    func testIsSpin() throws {
+        let to = "waterbottle"
+        let pattern = "erbottlewat"
+        XCTAssertTrue(isSpin(for: pattern, to: to))
+    }
+    
+    func testRemoveCombineSpace() throws {
+        let source = "  i am   a  little    boy     "
+        XCTAssert(removeCombineSpace(for: source) == "i am a little boy")
+    }
+    
+    func testLevenshtein() throws {
+        let from = "beiln"
+        let to = "feiling"
+        XCTAssert(levenshtein(from: from, to: to) == 3)
+    }
+    
+    func testResolveRelativePath() throws {
+        var from = "/qihoo/app/a/b/c/d/new.c"
+        let to = "/qihoo/app/1/2/test.c"
+        XCTAssert(resolveRelativePath(from: from, to: to) == "../../../../1/2/test.c")
+        
+        from = "/s/d/test.c"
+        XCTAssert(resolveRelativePath(from: from, to: to) == "../../qihoo/app/1/2/test.c")
+    }
+    
+    func testShortestChainLengthForTransform() throws {
+        let source = ["pooN", "pbcc", "zamc", "poIc", "pbca", "pbIc", "poIN"]
+        XCTAssert(shortestChainLengthForTransform(from: "TooN", to: "pbca", dictionary: source) == 7)
+    }
 }

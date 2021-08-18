@@ -915,3 +915,234 @@ func spin(for string: String, location: Int) -> String {
     
     return String(characters)
 }
+
+
+/// 寻找一个字符串的最长重复子串
+/// - Parameter string: 指定字符串
+/// - Returns: 最长的重复子串
+func maxLengthCommonSubstring(for string: String) -> String {
+    let characters = Array(string)
+    
+    func makeNext(for start: Int) -> [Int] {
+        if start == characters.count - 1 {
+            return [-1]
+        }
+        var next = [-1]
+        var index = 1
+        var location = -1
+        
+        while index + start <= characters.count {
+            if location == -1 || characters[location + start] == characters[index + start - 1] {
+                location += 1
+                index += 1
+                next.append(location)
+            } else {
+                location = next[location]
+            }
+        }
+        
+        return next
+    }
+    
+    var maxLength = -1
+    var maxStart = -1
+    for index in 0 ... characters.count - 1 {
+        let next = makeNext(for: index)
+        for location in 0 ... next.count - 1 {
+            if maxLength < next[location] && next[location] != 0 {
+                maxLength = next[location]
+                maxStart = index + (location - 1) - maxLength + 1
+            }
+        }
+    }
+    
+    if maxLength == -1 {
+        return ""
+    } else {
+        return String(characters[maxStart ... maxStart + maxLength - 1])
+    }
+}
+
+/// 给定一个字符串，求串中字典序最大的子序列，给定a0a1a2...an，首先在字符串a0a1a2...an找到最大的字符ai，
+/// 然后在ai+1...an中找最大的字符aj，以此类推直到剩余的字符长度为0，将这些找到的字符排列在一起即为最大的子序列
+/// - Parameter string: 给定一个字符串
+/// - Returns: 最大的子序列
+func maxSubsquenceInDictionarySort(for string: String) -> String {
+    let characters = Array(string)
+    guard !characters.isEmpty else {
+        return ""
+    }
+    
+    var result: [Character] = [characters.last!]
+    
+    var count = characters.count - 1
+    while count >= 0 {
+        if characters[count] > result.last! {
+            result.append(characters[count])
+        }
+        count -= 1
+    }
+    
+    result = result.reversed()
+    return String(result)
+}
+
+/// 判断`to`是否可以由`source`经过旋转得到
+/// - Parameters:
+///   - source: 指定字符串
+///   - to: 指定字符串
+/// - Returns: 是否可以旋转得到
+func isSpin(for source: String, to: String) -> Bool {
+    guard source.count == to.count else {
+        return false
+    }
+    let copySource = source + source
+    return match(pattern: to, subString: copySource) != nil
+}
+
+/// 删除字符串首尾的空格，并合并字符串内部的多个连续的空格为一个空格
+/// - Parameter string: 给定的字符串
+/// - Returns: 操作后的字符串
+func removeCombineSpace(for string: String) -> String {
+    var characters = Array(string)
+    
+    var reallyIndex = 0
+    var count = 0
+    var isHeadSpace = true
+    var isMiddleSpace = false
+    while count < characters.count {
+        if isHeadSpace && characters[count] == " " {
+            count += 1
+        } else if isHeadSpace && characters[count] != " " {
+            isHeadSpace = false
+            characters[reallyIndex] = characters[count]
+            reallyIndex += 1
+            count += 1
+        } else if !isHeadSpace && characters[count] == " " {
+            isMiddleSpace = true
+            count += 1
+        } else if !isHeadSpace && characters[count] != " " {
+            if isMiddleSpace {
+                isMiddleSpace = false
+                characters[reallyIndex] = " "
+                reallyIndex += 1
+            }
+            characters[reallyIndex] = characters[count]
+            reallyIndex += 1
+            count += 1
+        }
+    }
+    
+    if reallyIndex == 0 {
+        return ""
+    } else {
+        return String(characters[0 ..< reallyIndex])
+    }
+}
+
+/// 求两个字符串的编辑距离，可以进行增加替换删除将`from`变为`to`
+/// - Parameters:
+///   - from: 初始字符串
+///   - to: 目标字符串
+/// - Returns: 最小的距离
+func levenshtein(from: String, to: String) -> Int {
+    var distance: [[Int]] = Array(repeating: Array(repeating: -1, count: to.count + 1), count: from.count + 1)
+    let charactersF = Array(from)
+    let charactersT = Array(to)
+    distance[0][0] = 0
+    for index in 1 ... from.count {
+        distance[index][0] = index
+    }
+    for index in 1 ... to.count {
+        distance[0][index] = index
+    }
+    for indexF in 1 ... from.count {
+        for indexT in 1 ... to.count {
+            if charactersF[indexF - 1] == charactersT[indexT - 1] {
+                distance[indexF][indexT] = min(distance[indexF - 1][indexT] + 1, distance[indexF][indexT - 1] + 1, distance[indexF - 1][indexT - 1])
+            } else {
+                distance[indexF][indexT] = min(distance[indexF - 1][indexT] + 1, distance[indexF][indexT - 1] + 1, distance[indexF - 1][indexT - 1] + 1)
+            }
+        }
+    }
+    return distance[from.count][to.count]
+}
+
+
+/// 根据两个文件的绝对路径计算相对路径
+/// - Parameters:
+///   - from: 起始文件路径
+///   - to: 目标文件路径
+/// - Returns: 起始到目标文件的相对路径
+func resolveRelativePath(from: String, to: String) -> String {
+    let fromComponents = from.split(separator: "/")
+    let aimComponents = to.split(separator: "/").map({String($0)})
+    
+    var count = 0
+    while count < fromComponents.count && count < aimComponents.count {
+        if fromComponents[count] == aimComponents[count] {
+            count += 1
+        } else {
+            break
+        }
+    }
+    var results: [String] = []
+    let pointsNumber = fromComponents.count - count - 1
+    results.append(contentsOf: Array(repeating: "..", count: pointsNumber))
+    results.append(contentsOf: aimComponents[count ... aimComponents.count - 1])
+    return results.joined(separator: "/")
+}
+
+/// 将from变为to，一次只允许变换一个字符，且每次变换后的字符串均需要在给定的集合中，已知to在给定的集合中，且集合中的单词长度都一样
+/// - Parameters:
+///   - from: 起始字符串
+///   - to: 目标字符串
+///   - dictionary: 给定的字符串集合
+/// - Returns: 变换所需的最小步骤数
+func shortestChainLengthForTransform(from: String, to: String, dictionary: [String]) -> Int? {
+    func isAdjacent(left: String, right: String) -> Bool {
+        guard left.count == right.count else {
+            return false
+        }
+        let leftCharacters = Array(left)
+        let rightCharacters = Array(right)
+        var diff = 0
+        for index in 0 ..< leftCharacters.count {
+            if leftCharacters[index] == rightCharacters[index] {
+                continue
+            } else {
+                if diff == 0 {
+                    diff += 1
+                } else {
+                    return false
+                }
+            }
+        }
+        
+        if diff == 1 {
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    var queue = [(from, 1)]
+    var copyDictionary = dictionary
+    while !queue.isEmpty {
+        let current = queue.removeFirst()
+        if current.0 == to {
+            return current.1
+        }
+        var removeCount = 0
+        for index in 0 ..< copyDictionary.count {
+            if isAdjacent(left: current.0, right: copyDictionary[index]) {
+                removeCount += 1
+                queue.append((copyDictionary[index], current.1 + 1))
+            } else {
+                copyDictionary[index - removeCount] = copyDictionary[index]
+            }
+        }
+        copyDictionary = Array(copyDictionary.prefix(copyDictionary.count - removeCount))
+    }
+    return nil
+}
